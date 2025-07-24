@@ -48,13 +48,13 @@ export const register = async (
   
   users.push(newUser);
   
-  // Don't return the password
+  
   const { password: _, ...userWithoutPassword } = newUser;
   return userWithoutPassword;
 };
 
 /**
- * Login user and generate JWT token
+
  * @param email User email
  * @param password User plain text password
  */
@@ -68,13 +68,12 @@ export const login = async (
     return null;
   }
   
-  // Verify password
+ 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     return null;
   }
   
-  // Generate JWT token
   const payload = {
     userId: user.id,
     username: user.username,
