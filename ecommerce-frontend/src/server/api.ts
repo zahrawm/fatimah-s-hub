@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from 'axios';
+import axios, { type AxiosInstance, type AxiosResponse } from 'axios';
 
 
 export interface User {
@@ -51,28 +51,26 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Response interceptor to handle token expiration
+
 apiClient.interceptors.response.use(
   (response) => {
     return response;
   },
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid
+      
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
-      // Optionally redirect to login page
+      
       window.location.href = '/login';
     }
     return Promise.reject(error);
   }
 );
 
-// Auth Service Class
+
 class AuthService {
-  /**
-   * Register a new user
-   */
+  
   async register(userData: RegisterData): Promise<User> {
     try {
       const response: AxiosResponse<User> = await apiClient.post('/auth/register', userData);
@@ -82,15 +80,12 @@ class AuthService {
     }
   }
 
-  /**
-   * Login user
-   */
+ 
   async login(credentials: LoginData): Promise<LoginResponse> {
     try {
       const response: AxiosResponse<LoginResponse> = await apiClient.post('/auth/login', credentials);
       const { token, user } = response.data;
       
-      // Store token and user data
       localStorage.setItem('authToken', token);
       localStorage.setItem('user', JSON.stringify(user));
       
@@ -100,17 +95,14 @@ class AuthService {
     }
   }
 
-  /**
-   * Logout user
-   */
+  
   logout(): void {
-    localStorage.removeItem('authToken');
+    localStorage.removeItem+
+    ('authToken');
     localStorage.removeItem('user');
   }
 
-  /**
-   * Get current user from localStorage
-   */
+  
   getCurrentUser(): User | null {
     const userStr = localStorage.getItem('user');
     if (userStr) {
@@ -124,24 +116,18 @@ class AuthService {
     return null;
   }
 
-  /**
-   * Check if user is authenticated
-   */
+  
   isAuthenticated(): boolean {
     const token = localStorage.getItem('authToken');
     return !!token;
   }
 
-  /**
-   * Get auth token
-   */
+  
   getToken(): string | null {
     return localStorage.getItem('authToken');
   }
 
-  /**
-   * Get user by ID (requires authentication)
-   */
+  
   async getUserById(id: number): Promise<User> {
     try {
       const response: AxiosResponse<User> = await apiClient.get(`/users/${id}`);
@@ -151,14 +137,11 @@ class AuthService {
     }
   }
 
-  /**
-   * Update user profile (example protected route)
-   */
+  
   async updateProfile(userData: Partial<User>): Promise<User> {
     try {
       const response: AxiosResponse<User> = await apiClient.put('/users/profile', userData);
-      
-      // Update stored user data
+    
       const updatedUser = response.data;
       localStorage.setItem('user', JSON.stringify(updatedUser));
       
@@ -169,9 +152,9 @@ class AuthService {
   }
 }
 
-// Create and export a single instance
+
 const authService = new AuthService();
 
-// Export both the service instance and the axios client for other API calls
+
 export { authService, apiClient };
 export default authService;
